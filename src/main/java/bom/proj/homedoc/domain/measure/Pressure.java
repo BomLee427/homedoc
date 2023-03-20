@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,13 +15,15 @@ import javax.persistence.Table;
 public class Pressure extends Measurement {
 
     @Builder
-    private Pressure(Member member, Manual manual, Normality normality, String memo, Integer diastolic, Integer systolic) {
+    public Pressure(Member member, Manual manual, Normality normality, String memo, Integer diastolic, Integer systolic) {
         this.diastolic = diastolic;
         this.systolic = systolic;
         this.setMeasurement(member, manual, normality, memo);
     }
 
+    @Column(name = "pressure_dias")
     private Integer diastolic;
+    @Column(name = "pressure_sys")
     private Integer systolic;
 
     public void updateDiastolic(Integer diastolic) {

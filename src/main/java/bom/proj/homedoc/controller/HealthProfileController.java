@@ -1,62 +1,39 @@
 package bom.proj.homedoc.controller;
 
-import bom.proj.homedoc.dto.request.HealthProfileCreateRequestDto;
 import bom.proj.homedoc.dto.request.HealthProfileUpdateRequestDto;
-import bom.proj.homedoc.dto.response.CommonResponse;
+import bom.proj.homedoc.dto.response.CommonResponseDto;
 import bom.proj.homedoc.dto.response.HealthProfileResponseDto;
 import bom.proj.homedoc.service.HealthProfileService;
+import bom.proj.homedoc.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/health-profile")
+@RequestMapping("/v1/healthprofile")
+@PreAuthorize("hasAnyRole('USER')")
 public class HealthProfileController {
 
     private final HealthProfileService healthProfileService;
 
     /**
-     * 특정 회원의 건강정보 조회
+     * 자신의 건강정보 조회
      */
-    @GetMapping("/{memberId}")
-    public CommonResponse<HealthProfileResponseDto> getHealthProfileV1(
-            @PathVariable Long memberId
-    ) {
-        return CommonResponse.getResponse(healthProfileService.getHealthProfile(memberId));
+    @GetMapping("/my")
+    public ResponseEntity<CommonResponseDto<HealthProfileResponseDto>> getHealthProfileV1() {
+        return ResponseEntity.ok(CommonResponseDto.getResponse(healthProfileService.getHealthProfile(SecurityUtil.getCurrentUserPK().orElse(null))));
     }
 
     /**
-     * 건강정보 생성
+     * 자신의 건강정보 수정
      */
-    @PostMapping("/{memberId}")
-    public CommonResponse<Map<String, Long>> createHealthProfileV1(
-            @PathVariable Long memberId,
-            @Validated @RequestBody final HealthProfileCreateRequestDto dto
-    ) {
-        return CommonResponse.getResponse(Map.of("id", healthProfileService.createHealthProfile(memberId, dto)));
-    }
-
-    /**
-     * 건강정보 수정(PUT)
-     */
-    @PutMapping("/{profileId}")
-    public CommonResponse<HealthProfileResponseDto> updateHealthProfileV1(
-            @PathVariable Long profileId,
+    @PutMapping("/my")
+    public ResponseEntity<CommonResponseDto<HealthProfileResponseDto>> updateHealthProfileV1(
             @Validated @RequestBody final HealthProfileUpdateRequestDto dto
     ) {
-        return CommonResponse.getResponse(healthProfileService.updateHealthProfile(profileId, dto));
-    }
-
-    /**
-     * 건강정보 삭제
-     */
-    @DeleteMapping("/{profileId}")
-    public CommonResponse<Map<String, Long>> deleteHealthProfileV1 (
-            @PathVariable Long profileId
-    ) {
-        return CommonResponse.getResponse(Map.of("id", healthProfileService.deleteHealthProfile(profileId)));
+        return ResponseEntity.ok(CommonResponseDto.getResponse(healthProfileService.updateHealthProfile(SecurityUtil.getCurrentUserPK().orElse(null), dto)));
     }
 }

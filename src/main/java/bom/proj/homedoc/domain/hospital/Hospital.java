@@ -1,6 +1,7 @@
 package bom.proj.homedoc.domain.hospital;
 
 import bom.proj.homedoc.domain.Address;
+import bom.proj.homedoc.domain.BaseAuditingEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Hospital {
+public class Hospital extends BaseAuditingEntity {
 
     private Hospital(String name, Department department, Address address, String phoneNumber) {
         this.name = name;
@@ -42,13 +43,31 @@ public class Hospital {
     @OneToMany(mappedBy = "hospital")
     private List<MemberHospital> memberHospitals;
 
-    public static Hospital createHospital(String name, Department department, String city, String street, String zipCode, String phoneNumber) {
-        Address address = Address.createAddress(city, street, zipCode);
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateDepartment(Department department) {
+        this.department = department;
+    }
+
+    public void updateAddress(Address newAddress) {
+        this.address = newAddress;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public static Hospital createHospital(String name, Department department, Address address, String phoneNumber) {
         return new Hospital(name, department, address, phoneNumber);
     }
 
+    public void deleteHospital() {
+        super.delete();
+    }
+
     private String createHospitalHashcode() {
-        String hashCode = UUID.randomUUID().toString();
-        return hashCode;
+        return UUID.randomUUID().toString();
     }
 }

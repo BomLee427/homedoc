@@ -16,28 +16,30 @@ import javax.persistence.*;
 public class HealthProfile extends BaseAuditingEntity {
 
     @Builder
-    public HealthProfile(Member member, Sex sex, int age, Double height, Double weight, GlucoseRisk glucoseRisk, PressureRisk pressureRisk) {
+    public HealthProfile(Member member, Sex sex, int age, Double height, Double weight, GlucoseRisk glucoseRisk, GlucoseCriteria glucoseCriteria, PressureRisk pressureRisk, PressureCriteria pressureCriteria) {
         this.member = member;
         this.sex = sex;
         this.age = age;
         this.height = height;
         this.weight = weight;
         this.glucoseRisk = glucoseRisk;
+        this.glucoseCriteria = glucoseCriteria;
         this.pressureRisk = pressureRisk;
+        this.pressureCriteria = pressureCriteria;
     }
-
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "health_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @MapsId
     private Member member;
 
     @Enumerated(EnumType.STRING)
     private Sex sex; //MALE, FEMALE, ETC
-    private int age;
+    private Integer age;
 
     private Double height;
     private Double weight;
@@ -45,9 +47,14 @@ public class HealthProfile extends BaseAuditingEntity {
     @Enumerated(EnumType.STRING)
     private GlucoseRisk glucoseRisk; //VERY_HIGH, HIGH, NORMAL
 
+    @Embedded
+    private GlucoseCriteria glucoseCriteria;
+
     @Enumerated(EnumType.STRING)
     private PressureRisk pressureRisk; //VERY_HIGH, HIGH, NORMAL
 
+    @Embedded
+    private PressureCriteria pressureCriteria;
 
     public void updateSex(Sex sex) {
         this.sex = sex;
@@ -69,8 +76,16 @@ public class HealthProfile extends BaseAuditingEntity {
         this.glucoseRisk = glucoseRisk;
     }
 
+    public void updateGlucoseCriteria(GlucoseCriteria glucoseCriteria) {
+        this.glucoseCriteria = glucoseCriteria;
+    }
+
     public void updatePressureRisk(PressureRisk pressureRisk) {
         this.pressureRisk = pressureRisk;
+    }
+
+    public void updatePressureCriteria(PressureCriteria pressureCriteria) {
+        this.pressureCriteria = pressureCriteria;
     }
 
     public void deleteHealthProfile() {

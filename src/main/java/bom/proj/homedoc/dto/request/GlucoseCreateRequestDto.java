@@ -1,22 +1,23 @@
 package bom.proj.homedoc.dto.request;
 
-import bom.proj.homedoc.domain.EnumNullCheck;
 import bom.proj.homedoc.domain.Member;
 import bom.proj.homedoc.domain.measure.Fasted;
 import bom.proj.homedoc.domain.measure.Glucose;
 import bom.proj.homedoc.domain.measure.Manual;
 import bom.proj.homedoc.domain.measure.Meal;
-import bom.proj.homedoc.validation.EnumValue;
+import bom.proj.homedoc.util.validation.EnumValue;
+import lombok.Getter;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import static bom.proj.homedoc.domain.EnumNullCheck.*;
 
+@Getter
 public class GlucoseCreateRequestDto {
 
-    @NotBlank
+    @NotNull
+    @EnumValue(enumClass = Manual.class)
     private String manual;
 
     @NotNull
@@ -37,9 +38,9 @@ public class GlucoseCreateRequestDto {
         return Glucose.builder()
                 .member(member)
                 .manual(valueOfOrNull(Manual.class, manual))
-                .glucoseFasted(valueOfOrNull(Fasted.class, fasted))
-                .glucoseMeal(valueOfOrNull(Meal.class, meal))
-                .glucoseValue(value)
+                .fasted(valueOfOrNull(Fasted.class, fasted))
+                .meal(valueOfOrNull(Meal.class, meal))
+                .value(value)
                 .memo(memo)
                 .build();
     }

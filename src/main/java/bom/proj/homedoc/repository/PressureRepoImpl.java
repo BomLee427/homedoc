@@ -24,20 +24,19 @@ public class PressureRepoImpl implements PressureRepositoryCustom {
 
     @Override
     public List<Pressure> findAll(Long memberId, PressureSearch pressureSearch) {
-        List<Pressure> pressureList = jpaQueryFactory.selectFrom(qPressure)
+        return jpaQueryFactory.selectFrom(qPressure)
                 .where(
                         qPressure.member.id.eq(memberId),
                         qPressure.deletedAt.isNull(),
-                        systolicGreaterOrEqual(pressureSearch.getSysGoeCriteria()),
-                        systolicLessOrEqual(pressureSearch.getSysLoeCriteria()),
-                        diastolicGreaterOrEqual(pressureSearch.getDiasGoeCriteria()),
-                        diastolicLessOrEqual(pressureSearch.getDiasLoeCriteria()),
-                        diastolicLessOrEqual(pressureSearch.getDiasLoeCriteria()),
+                        systolicGreaterOrEqual(pressureSearch.getSysLowerLimit()),
+                        systolicLessOrEqual(pressureSearch.getSysUpperCriteria()),
+                        diastolicGreaterOrEqual(pressureSearch.getDiasLowerCriteria()),
+                        diastolicLessOrEqual(pressureSearch.getDiasUpperCriteria()),
+                        diastolicLessOrEqual(pressureSearch.getDiasUpperCriteria()),
                         isAbnormal(pressureSearch.getNormality()),
                         measuredAfter(pressureSearch.getStartDate()),
                         measuredBefore(pressureSearch.getEndDate())
                 ).fetch();
-        return pressureList;
     }
 
     @Override
@@ -46,16 +45,17 @@ public class PressureRepoImpl implements PressureRepositoryCustom {
                 .where(
                         qPressure.member.id.eq(memberId),
                         qPressure.deletedAt.isNull(),
-                        systolicGreaterOrEqual(pressureSearch.getSysGoeCriteria()),
-                        systolicLessOrEqual(pressureSearch.getSysLoeCriteria()),
-                        diastolicGreaterOrEqual(pressureSearch.getDiasGoeCriteria()),
-                        diastolicLessOrEqual(pressureSearch.getDiasLoeCriteria()),
-                        diastolicLessOrEqual(pressureSearch.getDiasLoeCriteria()),
+                        systolicGreaterOrEqual(pressureSearch.getSysLowerLimit()),
+                        systolicLessOrEqual(pressureSearch.getSysUpperCriteria()),
+                        diastolicGreaterOrEqual(pressureSearch.getDiasLowerCriteria()),
+                        diastolicLessOrEqual(pressureSearch.getDiasUpperCriteria()),
+                        diastolicLessOrEqual(pressureSearch.getDiasUpperCriteria()),
                         isAbnormal(pressureSearch.getNormality()),
                         measuredAfter(pressureSearch.getStartDate()),
                         measuredBefore(pressureSearch.getEndDate())
                 ).limit(pageable.getPageSize())
-                .offset(pageable.getOffset())
+                .offset(pageable.getPageNumber())
+                .orderBy(qPressure.measuredAt.desc())
                 .fetch();
         return new PageImpl<>(pressureList, pageable, pressureList.size());
     }

@@ -5,7 +5,7 @@ import bom.proj.homedoc.domain.healthprofile.GlucoseRisk;
 import bom.proj.homedoc.domain.healthprofile.HealthProfile;
 import bom.proj.homedoc.domain.healthprofile.PressureRisk;
 import bom.proj.homedoc.domain.healthprofile.Sex;
-import bom.proj.homedoc.validation.EnumValue;
+import bom.proj.homedoc.util.validation.EnumValue;
 import lombok.*;
 
 import static bom.proj.homedoc.domain.EnumNullCheck.*;

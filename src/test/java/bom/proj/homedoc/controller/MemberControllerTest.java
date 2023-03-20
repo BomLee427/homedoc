@@ -1,11 +1,7 @@
 package bom.proj.homedoc.controller;
 
-import bom.proj.homedoc.domain.JoinType;
-import bom.proj.homedoc.domain.OauthType;
-import bom.proj.homedoc.dto.request.DirectMemberCreateRequestDto;
+import bom.proj.homedoc.dto.request.MemberCreateRequestDto;
 import bom.proj.homedoc.dto.request.MemberUpdateRequestDto;
-import bom.proj.homedoc.dto.request.SnsMemberCreateRequestDto;
-import bom.proj.homedoc.dto.request.SnsUpdateRequestDto;
 import bom.proj.homedoc.dto.response.MemberResponseDto;
 import bom.proj.homedoc.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,8 +74,8 @@ class MemberControllerTest {
     public void 직접가입() throws Exception {
         // given
         Long fakeMemberId = 11L;
-        given(memberService.join(any())).willReturn(fakeMemberId);
-        DirectMemberCreateRequestDto dto = new DirectMemberCreateRequestDto();
+        given(memberService.directJoin(any())).willReturn(fakeMemberId);
+        MemberCreateRequestDto dto = new MemberCreateRequestDto();
         ReflectionTestUtils.setField(dto, "email", "test@test.com");
 
         // when
@@ -98,7 +94,7 @@ class MemberControllerTest {
     public void SNS가입() throws Exception {
         // given
         Long fakeMemberId = 11L;
-        given(memberService.join(any())).willReturn(fakeMemberId);
+        given(memberService.snsJoin(any())).willReturn(fakeMemberId);
         SnsMemberCreateRequestDto dto = new SnsMemberCreateRequestDto();
         ReflectionTestUtils.setField(dto, "oauthType", "NAVER");
         ReflectionTestUtils.setField(dto, "oauthId", "1234");

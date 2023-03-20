@@ -1,8 +1,10 @@
 package bom.proj.homedoc.exception;
 
 import bom.proj.homedoc.dto.response.ErrorResponse;
+import io.jsonwebtoken.JwtException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Map;
@@ -21,11 +22,11 @@ import java.util.stream.Collectors;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-// TODO: API 자체 예외면 커스텀 익셉션을 만드는게 낫나?
     private ResponseEntity<Object> buildResponseEntity(ErrorResponse errorResponse) {
-        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }
 
+//TODO: Error Response에 debug message 포함시킬지 여부 결정하기
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return buildResponseEntity(
@@ -43,6 +44,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         .message("Parameter is not valid")
                         .debugMessage(ex.getBindingResult().getFieldErrors().stream().map(e -> Map.of(e.getField(), e.getDefaultMessage())).collect(Collectors.toList()).toString())
                         .build());
+    }
+
+    @ExceptionHandler(JwtException.class)
+    protected ResponseEntity<Object> jwtException(JwtException ex) {
+        return buildResponseEntity(ErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED)
+                .message(ex.getMessage())
+                .build());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

@@ -1,4 +1,8 @@
 spring:
+  h2:
+    console:
+      enabled: true
+
   datasource:
     url: jdbc:h2:tcp://localhost/~/homedoc
     username: sa
@@ -6,12 +10,27 @@ spring:
     driver-class-name: org.h2.Driver
 
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create
-      properties:
-        hibernate:
-          format_sql: true
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+    defer-datasource-initialization: true
 
-logging:
-  level:
-    org.hibernate.SQL: debug
+jwt:
+  access-secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+  access-token-validity-time: 180000
+  refresh-secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+  refresh-token-validity-time: 60480000
+
+#logging:
+#  level:
+#    org.hibernate.SQL: info
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      log-format: "%(currentTime) | %(category) | %(sql)"
