@@ -2,7 +2,7 @@ package bom.proj.homedoc.dto.request;
 
 import bom.proj.homedoc.domain.measure.Fasted;
 import bom.proj.homedoc.domain.measure.Meal;
-import bom.proj.homedoc.validation.EnumValue;
+import bom.proj.homedoc.util.validation.EnumValue;
 import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
@@ -18,7 +18,7 @@ public class GlucoseUpdateRequestDto {
     @EnumValue(enumClass = Fasted.class)
     private String fasted;
 
-    private Double value;
+    private Double value; //TODO: long으로 변경 검토
 
     @Size(max = 200)
     private String memo;

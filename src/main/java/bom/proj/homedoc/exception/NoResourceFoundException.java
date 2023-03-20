@@ -1,8 +1,5 @@
 package bom.proj.homedoc.exception;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 public class NoResourceFoundException  extends RuntimeException {
     public NoResourceFoundException() { super("NO_RESOURCE_FOUND"); }
 

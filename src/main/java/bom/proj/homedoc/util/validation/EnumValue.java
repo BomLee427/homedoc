@@ -1,4 +1,4 @@
-package bom.proj.homedoc.validation;
+package bom.proj.homedoc.util.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

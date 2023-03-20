@@ -10,5 +10,8 @@ import java.util.Optional;
 @Repository
 public interface HealthProfileRepository extends JpaRepository<HealthProfile, Long> {
     @EntityGraph(attributePaths = {"member"})
-    Optional<HealthProfile> findByMemberId(Long id);
+    Optional<HealthProfile> findOneByMemberIdAndDeletedAtNull(Long memberId);
+
+    @EntityGraph(attributePaths = {"member"})
+    Optional<HealthProfile> findByIdAndDeletedAtNull(Long id);
 }

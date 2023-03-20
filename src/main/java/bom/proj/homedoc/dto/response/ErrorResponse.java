@@ -7,10 +7,17 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@SuperBuilder
+@Builder
 @Getter
-public class ErrorResponse extends RestResponse {
+public class ErrorResponse {
+
+    private HttpStatus status;
+    private String message;
+
+    @Builder.Default
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime time = LocalDateTime.now();
+
     private String debugMessage;
 }

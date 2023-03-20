@@ -15,28 +15,31 @@ import javax.persistence.*;
 public class Glucose extends Measurement {
 
     @Builder
-    private Glucose(Member member, Manual manual, Normality normality, String memo, Meal glucoseMeal, Fasted glucoseFasted, Double glucoseValue) {
-        this.glucoseMeal = glucoseMeal;
-        this.glucoseFasted = glucoseFasted;
-        this.glucoseValue = glucoseValue;
+    public Glucose(Member member, Manual manual, Normality normality, String memo, Meal meal, Fasted fasted, Double value) {
+        this.meal = meal;
+        this.fasted = fasted;
+        this.value = value;
         this.setMeasurement(member, manual, normality, memo);
     }
 
     @Enumerated(EnumType.STRING)
-    private Meal glucoseMeal; //BREAKFAST, LUNCH, DINNER
+    @Column(name = "glucose_meal")
+    private Meal meal; //BREAKFAST, LUNCH, DINNER
     @Enumerated(EnumType.STRING)
-    private Fasted glucoseFasted; //FASTED, AFTER_MEAL
-    private Double glucoseValue;
+    @Column(name = "glucose_fasted")
+    private Fasted fasted; //FASTED, AFTER_MEAL
+    @Column(name = "glucose_value")
+    private Double value;
 
     public void updateMeal(Meal meal) {
-        this.glucoseMeal = meal;
+        this.meal = meal;
     }
 
     public void updateFasted(Fasted fasted) {
-        this.glucoseFasted = fasted;
+        this.fasted = fasted;
     }
 
     public void updateValue(Double value) {
-        this.glucoseValue = value;
+        this.value = value;
     }
 }

@@ -1,14 +1,11 @@
 package bom.proj.homedoc.repository;
 
-import bom.proj.homedoc.domain.JoinType;
 import bom.proj.homedoc.domain.Member;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.Assert.*;
 
@@ -18,14 +15,13 @@ public class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
-
     @Test
     public void save() throws Exception {
         // given
         String email = "test@test.com";
 
         // when
-        Member savedMember = memberRepository.save(Member.createDirectMember(email));
+        Member savedMember = memberRepository.save(Member.createMember(email, "12345678"));
 
         // then
         assertEquals(email, savedMember.getEmail());
@@ -35,9 +31,9 @@ public class MemberRepositoryTest {
     @Test
     public void findAllByDeletedAtNull() throws Exception {
         // given
-        memberRepository.save(Member.createDirectMember("test1@gmail.com"));
-        memberRepository.save(Member.createDirectMember("test2@gmail.com"));
-        memberRepository.save(Member.createDirectMember("test3@gmail.com")).resign();
+        memberRepository.save(Member.createMember("test1@gmail.com", "12345678"));
+        memberRepository.save(Member.createMember("test2@gmail.com", "12345678"));
+        memberRepository.save(Member.createMember("test3@gmail.com", "12345678")).resign();
 
         // when
         Page <Member> memberList = memberRepository.findAllByDeletedAtNull(PageRequest.of(0, 100));
@@ -49,7 +45,7 @@ public class MemberRepositoryTest {
     @Test
     public void findById() throws Exception {
         // given
-        Member savedMember = memberRepository.save(Member.createDirectMember("test1@gmail.com"));
+        Member savedMember = memberRepository.save(Member.createMember("test1@gmail.com", "12345678"));
 
         // when
         Member foundMember = memberRepository.findById(savedMember.getId()).orElse(null);

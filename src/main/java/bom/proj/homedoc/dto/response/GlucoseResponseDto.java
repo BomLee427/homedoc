@@ -27,9 +27,9 @@ public class GlucoseResponseDto {
         dto.memo = glucose.getMemo();
         dto.measuredAt = glucose.getMeasuredAt();
 
-        dto.fasted = glucose.getGlucoseFasted();
-        dto.meal = glucose.getGlucoseMeal();
-        dto.value = glucose.getGlucoseValue();
+        dto.fasted = glucose.getFasted();
+        dto.meal = glucose.getMeal();
+        dto.value = glucose.getValue();
 
         return dto;
     }

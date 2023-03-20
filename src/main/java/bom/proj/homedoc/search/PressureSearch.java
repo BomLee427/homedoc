@@ -1,7 +1,6 @@
 package bom.proj.homedoc.search;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -10,8 +9,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class PressureSearch extends MeasureSearch {
 
-    private Integer sysGoeCriteria;
-    private Integer sysLoeCriteria;
-    private Integer diasGoeCriteria;
-    private Integer diasLoeCriteria;
+    private Integer sysLowerLimit;
+    private Integer sysUpperCriteria;
+    private Integer diasLowerCriteria;
+    private Integer diasUpperCriteria;
 }

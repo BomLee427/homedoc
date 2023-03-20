@@ -1,4 +1,4 @@
-package bom.proj.homedoc;
+package bom.proj.homedoc.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

@@ -9,15 +9,17 @@ import bom.proj.homedoc.dto.request.PressureUpdateRequestDto;
 import bom.proj.homedoc.dto.response.PressureResponseDto;
 import bom.proj.homedoc.dto.response.PressureStatisticResponseDto;
 import bom.proj.homedoc.repository.MemberRepository;
+import bom.proj.homedoc.repository.PressureRepoImpl;
 import bom.proj.homedoc.repository.PressureRepository;
+import bom.proj.homedoc.search.PressureSearch;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
@@ -29,12 +31,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
 public class PressureServiceTest {
 
     @Mock
     private PressureRepository pressureRepository;
+
+    @Mock
+    private PressureRepoImpl pressureRepoImpl;
 
     @Mock
     private MemberRepository memberRepository;
@@ -45,16 +49,19 @@ public class PressureServiceTest {
     @Test
     public void 혈압_목록조회() throws Exception {
         // given
-        Member member = Member.createDirectMember("email@email.com");
+        Member member = Member.createMember("email@email.com", "12345678");
         List<Pressure> pressureList = new ArrayList<>();
         pressureList.add(getPressure(100, 120, member));
         pressureList.add(getPressure(100, 120, member));
         pressureList.add(getPressure(100, 120, member));
 
-        given(pressureRepository.findAllByMemberIdAndDeletedAtNull(anyLong(), any())).willReturn(new PageImpl<>(pressureList));
+        PressureSearch pressureSearch = PressureSearch.builder().build();
+        Pageable pageable = PageRequest.of(0, 100);
+
+        given(pressureRepoImpl.findAll(anyLong(), any(), any())).willReturn(new PageImpl<>(pressureList));
 
         // when
-        List<PressureResponseDto> foundPressure = pressureService.getPressureList(11L, 0, 100, null);
+        List<PressureResponseDto> foundPressure = pressureService.getPressureList(11L, pressureSearch, pageable);
 
         // then
         assertEquals(3, foundPressure.size());
@@ -63,16 +70,16 @@ public class PressureServiceTest {
     @Test
     public void 혈압_개별조회() throws Exception {
         // given
-        Member member = Member.createDirectMember("email@email.com");
+        Member member = Member.createMember("email@email.com", "12345678");
         ReflectionTestUtils.setField(member, "id", 11L);
 
         Pressure pressure = getPressure(100, 120, member);
         ReflectionTestUtils.setField(pressure, "id", 18L);
 
-        given(pressureRepository.findById(18L)).willReturn(Optional.ofNullable(pressure));
+        given(pressureRepository.findById(anyLong())).willReturn(Optional.ofNullable(pressure));
 
         // when
-        PressureResponseDto foundPressure = pressureService.getPressure(18L);
+        PressureResponseDto foundPressure = pressureService.getPressure(11L, 18L);
 
         // then
         assertEquals(pressure.getId(), foundPressure.getMeasurementId());
@@ -96,7 +103,7 @@ public class PressureServiceTest {
         Pressure pressure = getPressure(100, 120, null);
         ReflectionTestUtils.setField(pressure, "id", fakePressureId);
 
-        given(memberRepository.findById(anyLong())).willReturn(Optional.ofNullable(Member.createDirectMember("test@email.com")));
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(Member.createMember("test@email.com", "12345678")));
         given(pressureRepository.save(any())).willReturn(pressure);
 
         // when
@@ -109,10 +116,11 @@ public class PressureServiceTest {
     @Test
     public void 혈압_수정() throws Exception {
         // given
-        Pressure pressure = getPressure(110, 120, Member.createDirectMember("test@email"));
+        Pressure pressure = getPressure(110, 120, Member.createMember("test@email.com", "12345678"));
         Integer newDiastolic = 115;
         Integer newSystolic = 125;
         Long fakePressureId = 18L;
+        Long fakeMemberId = 11L;
 
         PressureUpdateRequestDto dto = new PressureUpdateRequestDto();
         ReflectionTestUtils.setField(dto, "systolic", newSystolic);
@@ -122,7 +130,7 @@ public class PressureServiceTest {
         given(pressureRepository.findById(anyLong())).willReturn(Optional.ofNullable(pressure));
 
         // when
-        PressureResponseDto updatedPressure = pressureService.updatePressure(fakePressureId, dto);
+        PressureResponseDto updatedPressure = pressureService.updatePressure(fakeMemberId, fakePressureId, dto);
 
         // then
         //TODO: Integer 클래스 그대로 쓰면 assert안되는이유알아보기...
@@ -135,8 +143,9 @@ public class PressureServiceTest {
     public void 자동측정_값수정_불가() throws Exception {
         // given
         Integer oldDiastolic = 110;
-        Pressure pressure = getPressure(oldDiastolic, 120, Member.createDirectMember("test@email"));
+        Pressure pressure = getPressure(oldDiastolic, 120, Member.createMember("test@email.com", "12345678"));
         Long fakePressureId = 18L;
+        Long fakeMemberId = 11L;
         ReflectionTestUtils.setField(pressure, "manual", Manual.AUTOMATIC);
 
         PressureUpdateRequestDto dto = new PressureUpdateRequestDto();
@@ -146,7 +155,7 @@ public class PressureServiceTest {
         given(pressureRepository.findById(anyLong())).willReturn(Optional.ofNullable(pressure));
 
         // when
-        PressureResponseDto updatedPressure = pressureService.updatePressure(fakePressureId, dto);
+        PressureResponseDto updatedPressure = pressureService.updatePressure(fakeMemberId, fakePressureId, dto);
 
         // then
         //TODO: Integer 클래스 그대로 쓰면 assert안되는이유알아보기...
@@ -157,13 +166,13 @@ public class PressureServiceTest {
     @Test
     public void 혈압_삭제() throws Exception {
         // given
-        Pressure pressure = getPressure(100, 120, Member.createDirectMember("email@email.com"));
+        Pressure pressure = getPressure(100, 120, Member.createMember("email@email.com", "12345678"));
         ReflectionTestUtils.setField(pressure, "id", 10L);
 
         given(pressureRepository.findById(anyLong())).willReturn(Optional.ofNullable(pressure));
 
         // when
-        pressureService.deletePressure(10L);
+        pressureService.deletePressure(10L, 10L);
 
         // then
         assertNotNull(pressure.getDeletedAt());
@@ -172,7 +181,7 @@ public class PressureServiceTest {
     @Test
     public void 혈압_통계() throws Exception {
         // given
-        Member member = Member.createDirectMember("test@email.com");
+        Member member = Member.createMember("test@email.com", "12345678");
 
         Pressure pressure1 = getPressure(100, 120, member);
         Pressure pressure2 = getPressure(110, 130, member);
@@ -183,12 +192,21 @@ public class PressureServiceTest {
         pressureList.add(pressure2);
         pressureList.add(pressure3);
 
-        given(pressureRepository.findAllByMemberIdAndDeletedAtNull(anyLong())).willReturn(pressureList);
+        PressureSearch pressureSearch = PressureSearch.builder().build();
+
+        given(pressureRepoImpl.findAll(anyLong(), any())).willReturn(pressureList);
 
         // when
-        PressureStatisticResponseDto dto = pressureService.getPressureStatistic(18L, null);
+        PressureStatisticResponseDto dto = pressureService.getPressureStatistic(18L, pressureSearch);
 
         // then
+        assertEquals(Double.valueOf(110), dto.getDiastolicAverage());
+        assertEquals(Integer.valueOf(100), dto.getDiastolicMin());
+        assertEquals(Integer.valueOf(120), dto.getDiastolicMax());
+
+        assertEquals(Double.valueOf(130), dto.getSystolicAverage());
+        assertEquals(Integer.valueOf(120), dto.getSystolicMin());
+        assertEquals(Integer.valueOf(140), dto.getSystolicMax());
     }
 
     private static Pressure getPressure(int diastolic, int systolic, Member member) {

@@ -3,7 +3,7 @@ package bom.proj.homedoc.dto.request;
 import bom.proj.homedoc.domain.healthprofile.GlucoseRisk;
 import bom.proj.homedoc.domain.healthprofile.PressureRisk;
 import bom.proj.homedoc.domain.healthprofile.Sex;
-import bom.proj.homedoc.validation.EnumValue;
+import bom.proj.homedoc.util.validation.EnumValue;
 import lombok.Getter;
 
 @Getter

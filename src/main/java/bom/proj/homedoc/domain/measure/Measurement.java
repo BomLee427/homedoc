@@ -2,6 +2,7 @@ package bom.proj.homedoc.domain.measure;
 
 import bom.proj.homedoc.domain.BaseAuditingEntity;
 import bom.proj.homedoc.domain.Member;
+import bom.proj.homedoc.exception.NoResourceFoundException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public abstract class Measurement extends BaseAuditingEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Enumerated(EnumType.STRING)
@@ -41,8 +43,8 @@ public abstract class Measurement extends BaseAuditingEntity {
         this.measuredAt = LocalDateTime.now();
     }
 
-    public void updateManual(Manual manual) {
-        this.manual = manual;
+    public void updateToManual() {
+        this.manual = Manual.MANUAL;
     }
 
     public void updateNormality(Normality normality) {
@@ -55,5 +57,9 @@ public abstract class Measurement extends BaseAuditingEntity {
 
     public void deleteMeasurement() {
         super.delete();
+    }
+
+    public boolean isValidAuthor(Long memberId) throws NoResourceFoundException {
+        return (this.getMember() != null && (this.getMember().getId() == memberId));
     }
 }
