@@ -1,7 +1,7 @@
 package bom.proj.homedoc.controller;
 
-import bom.proj.homedoc.domain.EnumNullCheck;
 import bom.proj.homedoc.domain.measure.Fasted;
+import bom.proj.homedoc.domain.measure.Manual;
 import bom.proj.homedoc.domain.measure.Meal;
 import bom.proj.homedoc.dto.request.GlucoseCreateRequestDto;
 import bom.proj.homedoc.dto.request.GlucoseUpdateRequestDto;
@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static bom.proj.homedoc.domain.EnumNullCheck.valueOfOrNull;
 import static bom.proj.homedoc.util.SecurityUtil.*;
 
 //TODO: validation 내용 정리
@@ -44,14 +45,18 @@ public class GlucoseController {
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "limit", required = false, defaultValue = "100") int size,
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(value = "manual", required = false) String manualString
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
         LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTime = endDate != null ? endDate.atStartOfDay() : null;
 
+        Manual manual = valueOfOrNull(Manual.class, manualString);
+
         GlucoseSearch glucoseSearch = GlucoseSearch.builder()
+                .manual(manual)
                 .startDate(startDateTime)
                 .endDate(endDateTime)
                 .build();
@@ -67,16 +72,19 @@ public class GlucoseController {
             @RequestParam(value = "meal") String meal,
             @RequestParam(value = "fasted") String fasted,
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(value = "manual", required = false) String manualString
     ) {
 
         LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTime = endDate != null ? endDate.atStartOfDay() : null;
 
+        Manual manual = valueOfOrNull(Manual.class, manualString);
 
         GlucoseSearch glucoseSearch = GlucoseSearch.builder()
-                .meal(EnumNullCheck.valueOfOrNull(Meal.class, meal))
-                .fasted(EnumNullCheck.valueOfOrNull(Fasted.class, fasted))
+                .meal(valueOfOrNull(Meal.class, meal))
+                .fasted(valueOfOrNull(Fasted.class, fasted))
+                .manual(manual)
                 .startDate(startDateTime)
                 .endDate(endDateTime)
                 .build();

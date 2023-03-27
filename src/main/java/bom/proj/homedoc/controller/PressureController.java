@@ -1,5 +1,6 @@
 package bom.proj.homedoc.controller;
 
+import bom.proj.homedoc.domain.measure.Manual;
 import bom.proj.homedoc.dto.request.PressureCreateRequestDto;
 import bom.proj.homedoc.dto.request.PressureUpdateRequestDto;
 import bom.proj.homedoc.dto.response.CommonResponseDto;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static bom.proj.homedoc.domain.EnumNullCheck.valueOfOrNull;
 import static bom.proj.homedoc.util.SecurityUtil.*;
 
 @RestController
@@ -39,7 +41,8 @@ public class PressureController {
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "limit", required = false, defaultValue = "100") int size,
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(value = "manual", required = false) String manualString
     ) {
 
         Pageable pageable = PageRequest.of(page, size);
@@ -47,9 +50,12 @@ public class PressureController {
         LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTime = endDate != null ? endDate.atStartOfDay() : null;
 
+        Manual manual = valueOfOrNull(Manual.class, manualString);
+
         PressureSearch pressureSearch = PressureSearch.builder()
                 .startDate(startDateTime)
                 .endDate(endDateTime)
+                .manual(manual)
                 .build();
 
         return ResponseEntity.ok(CommonResponseDto.getResponse(pressureService.getPressureList(getCurrentUserPK().orElse(null), pressureSearch, pageable)));
@@ -61,15 +67,19 @@ public class PressureController {
     @GetMapping("/statistic")
     public ResponseEntity<CommonResponseDto<PressureStatisticResponseDto>> getPressureStatisticV1(
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(value = "manual", required = false) String manualString
     ) {
 
         LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTime = endDate != null ? endDate.atStartOfDay() : null;
 
+        Manual manual = valueOfOrNull(Manual.class, manualString);
+
         PressureSearch pressureSearch = PressureSearch.builder()
                 .startDate(startDateTime)
                 .endDate(endDateTime)
+                .manual(manual)
                 .build();
 
         return ResponseEntity.ok(CommonResponseDto.getResponse(pressureService.getPressureStatistic(getCurrentUserPK().orElse(null), pressureSearch)));
