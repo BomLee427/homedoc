@@ -67,7 +67,7 @@ public class AuthService {
         }
 
         //MEMO: Spring Security의 loadUserByName 과정 중 member select 쿼리를 한번 날리게 되는데 이때 Member 엔티티를 컨텍스트화할 방법이 있을까?
-        //MEMO: 그렇지 않으면 아래 두 줄에서 쿼리를 무조건 두 번 해야함. 로그인시에도 refresh 토큰 업데이트를 위해 select 후 update해야 하고
+        // 그렇지 않으면 아래 두 줄에서 쿼리를 무조건 두 번 해야함.
         Authentication authentication = tokenProvider.getAuthentication(refreshToken);
         Member member = memberRepository.findByEmailAndDeletedAtNull(authentication.getName())
                 .orElseThrow(NoResourceFoundException::new);
