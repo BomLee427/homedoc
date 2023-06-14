@@ -141,3 +141,8 @@
 - 측정정보
     - 혈당
     - 혈압
+
+
+## ERD, UML
+![_HomeDoc-ERD drawio](https://github.com/BomLee427/homedoc/assets/103720594/a92b1130-d729-46c4-9683-a8dd11bca762)
+![_HomeDoc-UML drawio](https://github.com/BomLee427/homedoc/assets/103720594/9a811408-f638-41a9-8bf0-7e29b4423592)
