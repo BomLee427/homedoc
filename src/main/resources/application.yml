@@ -4,6 +4,7 @@ spring:
       enabled: true
 
   datasource:
+# https://lob-dev.tistory.com/13
     url: jdbc:h2:tcp://localhost/~/homedoc
     username: sa
     password:
@@ -12,7 +13,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: false

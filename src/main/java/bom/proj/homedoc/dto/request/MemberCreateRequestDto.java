@@ -17,7 +17,10 @@ public class MemberCreateRequestDto {
     @Size(min = 3, max = 32)
     private String password;
 
+    @Size(min = 3, max = 24)
+    private String name;
+
     public Member toEntity(String encodedPassword) {
-        return Member.createMember(this.email, encodedPassword);
+        return Member.createDirectMember(this.email, encodedPassword, name);
     }
 }
