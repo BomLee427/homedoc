@@ -21,9 +21,8 @@ public class Member extends BaseAuditingEntity {
 
     private String password;
 
-    private OauthType oauthType;
-
-    private String oauthId;
+    @Embedded
+    private OauthInfo oauthInfo;
 
     private String name;
 
@@ -35,24 +34,17 @@ public class Member extends BaseAuditingEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<MemberAuthority> memberAuthorities;
 
+    @Builder(builderMethodName = "defaultBuilder")
     private Member(String email, String password, String name) {
         this.email = email;
         this.name = name;
         this.password = password;
     }
 
+    @Builder(builderMethodName = "oauthBuilder")
     private Member(OauthType oauthType, String oauthId, String name) {
-        this.oauthType = oauthType;
-        this.oauthId = oauthId;
+        this.oauthInfo = OauthInfo.of(oauthType, oauthId);
         this.name = name;
-    }
-
-    public static Member createDirectMember(String email, String password, String name) {
-        return new Member(email, password, name);
-    }
-
-    public static Member createSnsMember(OauthType oauthType, String oauthId, String name) {
-        return new Member(oauthType, oauthId, name);
     }
 
     public void updateEmail(String email) {
@@ -68,8 +60,7 @@ public class Member extends BaseAuditingEntity {
     }
 
     public void updateOauthInfo(OauthType oauthType, String oauthId) {
-        this.oauthType = oauthType;
-        this.oauthId = oauthId;
+        this.oauthInfo = OauthInfo.of(oauthType, oauthId);
     }
 
     public void updatePassword(String password) {
