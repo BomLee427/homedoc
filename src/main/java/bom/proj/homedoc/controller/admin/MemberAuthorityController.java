@@ -1,7 +1,7 @@
 package bom.proj.homedoc.controller.admin;
 
 import bom.proj.homedoc.dto.request.AuthorityUpdateRequestDto;
-import bom.proj.homedoc.dto.response.CommonResponseDto;
+import bom.proj.homedoc.dto.response.CommonResponse;
 import bom.proj.homedoc.dto.response.MemberAuthorityResponseDto;
 import bom.proj.homedoc.service.MemberAuthorityService;
 import lombok.RequiredArgsConstructor;
@@ -22,19 +22,19 @@ public class MemberAuthorityController {
      * 권한 추가
      */
     @PostMapping("/{memberId}")
-    public ResponseEntity<CommonResponseDto<MemberAuthorityResponseDto>> addAuthority(
+    public ResponseEntity<CommonResponse<MemberAuthorityResponseDto>> addAuthority(
             @Validated @RequestBody AuthorityUpdateRequestDto dto,
             @PathVariable Long memberId) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(memberAuthorityService.addAuthority(memberId, dto.getAuthorityList())));
+        return ResponseEntity.ok(CommonResponse.getResponse(memberAuthorityService.addAuthority(memberId, dto.getAuthorityList())));
     }
 
     /**
      * 권한 삭제
      */
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<CommonResponseDto<MemberAuthorityResponseDto>> removeAuthority(
+    public ResponseEntity<CommonResponse<MemberAuthorityResponseDto>> removeAuthority(
             @Validated @RequestBody AuthorityUpdateRequestDto dto,
             @PathVariable Long memberId) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(memberAuthorityService.removeAuthority(memberId, dto.getAuthorityList())));
+        return ResponseEntity.ok(CommonResponse.getResponse(memberAuthorityService.removeAuthority(memberId, dto.getAuthorityList())));
     }
 }

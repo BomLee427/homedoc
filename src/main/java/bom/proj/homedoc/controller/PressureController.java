@@ -3,7 +3,7 @@ package bom.proj.homedoc.controller;
 import bom.proj.homedoc.domain.measure.Manual;
 import bom.proj.homedoc.dto.request.PressureCreateRequestDto;
 import bom.proj.homedoc.dto.request.PressureUpdateRequestDto;
-import bom.proj.homedoc.dto.response.CommonResponseDto;
+import bom.proj.homedoc.dto.response.CommonResponse;
 import bom.proj.homedoc.dto.response.PressureResponseDto;
 import bom.proj.homedoc.dto.response.PressureStatisticResponseDto;
 import bom.proj.homedoc.search.PressureSearch;
@@ -37,7 +37,7 @@ public class PressureController {
      * 혈압 측정기록 조회(페이징)
      */
     @GetMapping("")
-    public ResponseEntity<CommonResponseDto<List<PressureResponseDto>>> getPressureListV1(
+    public ResponseEntity<CommonResponse<List<PressureResponseDto>>> getPressureListV1(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "limit", required = false, defaultValue = "100") int size,
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
@@ -58,14 +58,14 @@ public class PressureController {
                 .manual(manual)
                 .build();
 
-        return ResponseEntity.ok(CommonResponseDto.getResponse(pressureService.getPressureList(getCurrentUserPK().orElse(null), pressureSearch, pageable)));
+        return ResponseEntity.ok(CommonResponse.getResponse(pressureService.getPressureList(getCurrentUserPK().orElse(null), pressureSearch, pageable)));
     }
 
     /**
      * 혈압 통계 조회
      */
     @GetMapping("/statistic")
-    public ResponseEntity<CommonResponseDto<PressureStatisticResponseDto>> getPressureStatisticV1(
+    public ResponseEntity<CommonResponse<PressureStatisticResponseDto>> getPressureStatisticV1(
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
             @RequestParam(value = "manual", required = false) String manualString
@@ -82,47 +82,47 @@ public class PressureController {
                 .manual(manual)
                 .build();
 
-        return ResponseEntity.ok(CommonResponseDto.getResponse(pressureService.getPressureStatistic(getCurrentUserPK().orElse(null), pressureSearch)));
+        return ResponseEntity.ok(CommonResponse.getResponse(pressureService.getPressureStatistic(getCurrentUserPK().orElse(null), pressureSearch)));
     }
 
     /**
      * 특정 혈압 측정기록 상세 조회
      */
     @GetMapping("/{measurementId}")
-    public ResponseEntity<CommonResponseDto<PressureResponseDto>> getPressureV1(
+    public ResponseEntity<CommonResponse<PressureResponseDto>> getPressureV1(
             @PathVariable Long measurementId
     ) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(pressureService.getPressure(getCurrentUserPK().orElse(null), measurementId)));
+        return ResponseEntity.ok(CommonResponse.getResponse(pressureService.getPressure(getCurrentUserPK().orElse(null), measurementId)));
     }
 
     /**
      * 혈압 측정
      */
     @PostMapping("")
-    public ResponseEntity<CommonResponseDto<Map<String, Long>>> createPressureV1(
+    public ResponseEntity<CommonResponse<Map<String, Long>>> createPressureV1(
             @RequestBody final PressureCreateRequestDto dto
     ) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(Map.of("id", pressureService.createPressure(getCurrentUserPK().orElse(null), dto))));
+        return ResponseEntity.ok(CommonResponse.getResponse(Map.of("id", pressureService.createPressure(getCurrentUserPK().orElse(null), dto))));
     }
 
     /**
      * 혈압 측정기록 수정
      */
     @PatchMapping("/{measurementId}")
-    public ResponseEntity<CommonResponseDto<PressureResponseDto>> updatePressureV1(
+    public ResponseEntity<CommonResponse<PressureResponseDto>> updatePressureV1(
             @PathVariable Long measurementId,
             @Validated @RequestBody final PressureUpdateRequestDto dto
     ) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(pressureService.updatePressure(getCurrentUserPK().orElse(null), measurementId, dto)));
+        return ResponseEntity.ok(CommonResponse.getResponse(pressureService.updatePressure(getCurrentUserPK().orElse(null), measurementId, dto)));
     }
 
     /**
      * 혈압 측정기록 삭제
      */
     @DeleteMapping("/{measurementId}")
-    public ResponseEntity<CommonResponseDto<Map<String, Long>>> deletePressureV1(
+    public ResponseEntity<CommonResponse<Map<String, Long>>> deletePressureV1(
             @PathVariable Long measurementId
     ) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(Map.of("id", pressureService.deletePressure(getCurrentUserPK().orElse(null), measurementId))));
+        return ResponseEntity.ok(CommonResponse.getResponse(Map.of("id", pressureService.deletePressure(getCurrentUserPK().orElse(null), measurementId))));
     }
 }

@@ -5,7 +5,7 @@ spring:
 
   datasource:
 # https://lob-dev.tistory.com/13
-    url: jdbc:h2:tcp://localhost/~/homedoc
+    url: jdbc:h2:mem:homedoc
     username: sa
     password:
     driver-class-name: org.h2.Driver

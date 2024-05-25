@@ -4,7 +4,7 @@ import bom.proj.homedoc.domain.EnumNullCheck;
 import bom.proj.homedoc.domain.hospital.Department;
 import bom.proj.homedoc.dto.request.HospitalCreateRequestDto;
 import bom.proj.homedoc.dto.request.HospitalUpdateRequestDto;
-import bom.proj.homedoc.dto.response.CommonResponseDto;
+import bom.proj.homedoc.dto.response.CommonResponse;
 import bom.proj.homedoc.dto.response.HospitalResponseDto;
 import bom.proj.homedoc.search.HospitalSearch;
 import bom.proj.homedoc.service.HospitalService;
@@ -30,7 +30,7 @@ public class AdminHospitalController {
 
     // 제휴병원 검색
     @GetMapping("")
-    public ResponseEntity<CommonResponseDto<List<HospitalResponseDto>>> getHospitalListV1(
+    public ResponseEntity<CommonResponse<List<HospitalResponseDto>>> getHospitalListV1(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "department", required = false) String department,
             @RequestParam(value = "city", required = false) String city,
@@ -44,39 +44,39 @@ public class AdminHospitalController {
                 .city(city)
                 .build();
 
-        return ResponseEntity.ok(CommonResponseDto.getResponse(hospitalService.getHospitalList(hospitalSearch, pageable)));
+        return ResponseEntity.ok(CommonResponse.getResponse(hospitalService.getHospitalList(hospitalSearch, pageable)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommonResponseDto<HospitalResponseDto>> getHospitalV1(
+    public ResponseEntity<CommonResponse<HospitalResponseDto>> getHospitalV1(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(hospitalService.getHospital(id)));
+        return ResponseEntity.ok(CommonResponse.getResponse(hospitalService.getHospital(id)));
     }
 
     // 제휴병원 등록
     @PostMapping("")
-    public ResponseEntity<CommonResponseDto<Map<String, Long>>> registerHospitalV1(
+    public ResponseEntity<CommonResponse<Map<String, Long>>> registerHospitalV1(
             @Validated @RequestBody final HospitalCreateRequestDto dto
     ) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(Map.of("id", hospitalService.registerHospital(dto))));
+        return ResponseEntity.ok(CommonResponse.getResponse(Map.of("id", hospitalService.registerHospital(dto))));
     }
 
     // 제휴병원 수정
     @PutMapping("/{hospitalId}")
-    public ResponseEntity<CommonResponseDto<HospitalResponseDto>> updateHospitalV1(
+    public ResponseEntity<CommonResponse<HospitalResponseDto>> updateHospitalV1(
             @PathVariable Long hospitalId,
             @Validated @RequestBody final HospitalUpdateRequestDto dto
     ) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(hospitalService.updateHospital(hospitalId, dto)));
+        return ResponseEntity.ok(CommonResponse.getResponse(hospitalService.updateHospital(hospitalId, dto)));
     }
 
     // 제휴병원 삭제
     @DeleteMapping("/{hospitalId}")
-    public ResponseEntity<CommonResponseDto<Map<String, Long>>> deleteHospitalV1(
+    public ResponseEntity<CommonResponse<Map<String, Long>>> deleteHospitalV1(
             @PathVariable Long hospitalId
     ) {
-        return ResponseEntity.ok(CommonResponseDto.getResponse(Map.of("id", hospitalService.deleteHospital(hospitalId))));
+        return ResponseEntity.ok(CommonResponse.getResponse(Map.of("id", hospitalService.deleteHospital(hospitalId))));
     }
 
 }
