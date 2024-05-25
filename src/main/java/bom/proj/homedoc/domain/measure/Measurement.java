@@ -2,12 +2,12 @@ package bom.proj.homedoc.domain.measure;
 
 import bom.proj.homedoc.domain.BaseAuditingEntity;
 import bom.proj.homedoc.domain.Member;
-import bom.proj.homedoc.exception.NoResourceFoundException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,13 +20,15 @@ public abstract class Measurement extends BaseAuditingEntity {
     @Column(name = "measurement_id")
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "varchar(64) default 'MANUAL'")
-    private Manual manual; //MANUAL, AUTOMATIC
+    @Column(columnDefinition = "varchar(64) default 'MANUAL'", nullable = false)
+    private Manual manual = Manual.MANUAL; //MANUAL, AUTOMATIC
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(64) default 'NORMAL'")
@@ -59,7 +61,8 @@ public abstract class Measurement extends BaseAuditingEntity {
         super.delete();
     }
 
-    public boolean isValidAuthor(Long memberId) throws NoResourceFoundException {
+    @Deprecated
+    public boolean isValidAuthor(Long memberId) {
         return (this.getMember() != null && (this.getMember().getId() == memberId));
     }
 }
