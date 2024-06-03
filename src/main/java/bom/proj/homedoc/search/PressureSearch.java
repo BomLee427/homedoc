@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class PressureSearch extends MeasureSearch {
 
-    private Integer sysLowerLimit;
+    private Integer sysLowerCriteria;
     private Integer sysUpperCriteria;
     private Integer diasLowerCriteria;
     private Integer diasUpperCriteria;

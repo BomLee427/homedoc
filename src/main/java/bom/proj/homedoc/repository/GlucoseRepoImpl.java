@@ -28,9 +28,9 @@ public class GlucoseRepoImpl implements GlucoseRepositoryCustom {
                         qGlucose.deletedAt.isNull(),
                         mealEq(glucoseSearch.getMeal()),
                         fastedEq(glucoseSearch.getFasted()),
-                        glucoseLessOrEqual(glucoseSearch.getGluUpperLimit()),
-                        glucoseGraterOrEqual(glucoseSearch.getGluLowerLimit()),
-                        isAbnormal(glucoseSearch.getNormality()),
+                        glucoseLessOrEqual(glucoseSearch.getGluUpperCriteria()),
+                        glucoseGraterOrEqual(glucoseSearch.getGluLowerCriteria()),
+                        manual(glucoseSearch.getManual()),
                         measuredAfter(glucoseSearch.getStartDate()),
                         measuredBefore(glucoseSearch.getEndDate())
                 ).fetch();
@@ -44,9 +44,9 @@ public class GlucoseRepoImpl implements GlucoseRepositoryCustom {
                         qGlucose.deletedAt.isNull(),
                         mealEq(glucoseSearch.getMeal()),
                         fastedEq(glucoseSearch.getFasted()),
-                        glucoseLessOrEqual(glucoseSearch.getGluUpperLimit()),
-                        glucoseGraterOrEqual(glucoseSearch.getGluLowerLimit()),
-                        isAbnormal(glucoseSearch.getNormality()),
+                        glucoseLessOrEqual(glucoseSearch.getGluUpperCriteria()),
+                        glucoseGraterOrEqual(glucoseSearch.getGluLowerCriteria()),
+                        manual(glucoseSearch.getManual()),
                         measuredAfter(glucoseSearch.getStartDate()),
                         measuredBefore(glucoseSearch.getEndDate())
                 ).limit(pageable.getPageSize())
@@ -71,6 +71,11 @@ public class GlucoseRepoImpl implements GlucoseRepositoryCustom {
     private BooleanExpression glucoseGraterOrEqual(Double value) {
         return value != null ? qGlucose.value.goe(value) : null;
     }
+
+    private BooleanExpression manual(Manual manual) {
+        return manual != null ? qGlucose.manual.eq(manual) : null;
+    }
+
     private BooleanExpression isAbnormal(Normality normality) {
         return normality != null ? qGlucose.normality.eq(Normality.ABNORMAL) : null;
     }

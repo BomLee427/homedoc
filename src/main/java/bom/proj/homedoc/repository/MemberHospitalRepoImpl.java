@@ -25,12 +25,12 @@ public class MemberHospitalRepoImpl implements MemberHospitalRepositoryCustom {
 
     @Override
     public Optional<MemberHospital> findByMemberIdAndHospitalHashcode(Long memberId, String hashCode) {
-        return jpaQueryFactory.selectFrom(qMemberHospital)
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(qMemberHospital)
                 .where(
                         qMemberHospital.member.id.eq(memberId),
                         qMemberHospital.hospital.hashCode.eq(hashCode),
                         qMemberHospital.deletedAt.isNull()
-                ).fetch();
+                ).fetchOne());
     }
 
     @Override

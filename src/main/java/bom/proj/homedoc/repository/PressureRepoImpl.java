@@ -1,5 +1,6 @@
 package bom.proj.homedoc.repository;
 
+import bom.proj.homedoc.domain.measure.Manual;
 import bom.proj.homedoc.domain.measure.Normality;
 import bom.proj.homedoc.domain.measure.Pressure;
 import bom.proj.homedoc.domain.measure.QPressure;
@@ -28,12 +29,12 @@ public class PressureRepoImpl implements PressureRepositoryCustom {
                 .where(
                         qPressure.member.id.eq(memberId),
                         qPressure.deletedAt.isNull(),
-                        systolicGreaterOrEqual(pressureSearch.getSysLowerLimit()),
+                        systolicGreaterOrEqual(pressureSearch.getSysLowerCriteria()),
                         systolicLessOrEqual(pressureSearch.getSysUpperCriteria()),
                         diastolicGreaterOrEqual(pressureSearch.getDiasLowerCriteria()),
                         diastolicLessOrEqual(pressureSearch.getDiasUpperCriteria()),
                         diastolicLessOrEqual(pressureSearch.getDiasUpperCriteria()),
-                        isAbnormal(pressureSearch.getNormality()),
+                        manual(pressureSearch.getManual()),
                         measuredAfter(pressureSearch.getStartDate()),
                         measuredBefore(pressureSearch.getEndDate())
                 ).fetch();
@@ -45,12 +46,12 @@ public class PressureRepoImpl implements PressureRepositoryCustom {
                 .where(
                         qPressure.member.id.eq(memberId),
                         qPressure.deletedAt.isNull(),
-                        systolicGreaterOrEqual(pressureSearch.getSysLowerLimit()),
+                        systolicGreaterOrEqual(pressureSearch.getSysLowerCriteria()),
                         systolicLessOrEqual(pressureSearch.getSysUpperCriteria()),
                         diastolicGreaterOrEqual(pressureSearch.getDiasLowerCriteria()),
                         diastolicLessOrEqual(pressureSearch.getDiasUpperCriteria()),
                         diastolicLessOrEqual(pressureSearch.getDiasUpperCriteria()),
-                        isAbnormal(pressureSearch.getNormality()),
+                        manual(pressureSearch.getManual()),
                         measuredAfter(pressureSearch.getStartDate()),
                         measuredBefore(pressureSearch.getEndDate())
                 ).limit(pageable.getPageSize())
@@ -74,6 +75,10 @@ public class PressureRepoImpl implements PressureRepositoryCustom {
 
     private BooleanExpression diastolicLessOrEqual(Integer diasLoeCriteria) {
         return diasLoeCriteria != null ? qPressure.diastolic.loe(diasLoeCriteria) : null;
+    }
+
+    private BooleanExpression manual(Manual manual) {
+        return manual != null ? qPressure.manual.eq(manual) : null;
     }
 
     private BooleanExpression isAbnormal(Normality normality) {

@@ -1,5 +1,6 @@
 package bom.proj.homedoc.search;
 
+import bom.proj.homedoc.domain.measure.Manual;
 import bom.proj.homedoc.domain.measure.Normality;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 abstract public class MeasureSearch {
 
-    private Normality normality;
+    private Manual manual;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 }

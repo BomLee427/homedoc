@@ -56,7 +56,7 @@ public class GlucoseService {
             average = glucoseList.stream()
                     .mapToDouble(Glucose::getValue)
                     .average()
-                    .orElseThrow(() -> new ArithmeticException("이완기 혈압 최대값을 구할 수 없습니다."));
+                    .orElseThrow(() -> new ArithmeticException("이완기 혈압 평균값을 구할 수 없습니다."));
             //TODO: 0이면?
             //TODO: 예외를 너무 성의없이 던지는 것은 아닌지
 
@@ -68,7 +68,7 @@ public class GlucoseService {
             min = glucoseList.stream()
                     .mapToDouble(Glucose::getValue)
                     .min()
-                    .orElseThrow(() -> new ArithmeticException("이완기 혈압 최대값을 구할 수 없습니다."));
+                    .orElseThrow(() -> new ArithmeticException("이완기 혈압 최소값을 구할 수 없습니다."));
         }
 
         return GlucoseStatisticResponseDto.builder()

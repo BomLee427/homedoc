@@ -12,6 +12,6 @@ import lombok.experimental.SuperBuilder;
 public class GlucoseSearch extends MeasureSearch {
     private Fasted fasted;
     private Meal meal;
-    private Double gluUpperLimit;
-    private Double gluLowerLimit;
+    private Double gluUpperCriteria;
+    private Double gluLowerCriteria;
 }
