@@ -10,7 +10,7 @@ Java/Spring으로 기술 스택을 전향한 뒤의 첫 프로젝트인 만큼, 
 
 프로젝트 개발 회고
 ---
-https://velog.io/@bomlee427/series/HomeDoc-개발-회고  
+[https://bomlee427.github.io/categories/#homedoc-개발-회고록](https://bomlee427.github.io/categories/#homedoc-%EA%B0%9C%EB%B0%9C-%ED%9A%8C%EA%B3%A0%EB%A1%9D)
 개발하며 느꼈던 점이나 배운 것들을 완전히 제 것으로 체득하고자, 코드 리뷰 겸 회고록의 형식으로 개발 회고를 기고 중입니다.
 
 프로젝트 요약
